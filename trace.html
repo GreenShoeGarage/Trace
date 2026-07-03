@@ -466,6 +466,7 @@
     .network-map-svg .map-node { cursor: pointer; }
     .network-map-svg .map-node rect { fill: var(--paper); stroke: var(--line); stroke-width: 1.4; filter: drop-shadow(0 5px 8px rgba(0,0,0,.10)); }
     .network-map-svg .map-node:hover rect { stroke: var(--accent2); stroke-width: 2.2; }
+    .network-map-svg .map-node.selected rect { stroke: var(--accent2); stroke-width: 3; filter: drop-shadow(0 0 10px rgba(120, 214, 210, .28)); }
     .network-map-svg .map-node.claim rect { fill: rgba(255,248,233,.96); stroke: var(--accent2); stroke-width: 2.2; }
     [data-theme="dark"] .network-map-svg .map-node.claim rect { fill: rgba(42,48,51,.96); }
     .network-map-svg .map-node.evidence.support rect { stroke: var(--good); }
@@ -1168,7 +1169,7 @@
       <div class="brand">
         <div class="badge060">060</div>
         <div>
-          <h1>FI060 Trace <span class="muted">v3.2.1</span></h1>
+          <h1>FI060 Trace <span class="muted">v3.2.2</span></h1>
           <p>A local-first instrument for tracing claims, evidence, uncertainty, and decisions.</p>
         </div>
       </div>
@@ -1255,7 +1256,7 @@
     (() => {
       'use strict';
 
-      const VERSION = '3.2.1';
+      const VERSION = '3.2.2';
       const STORAGE_KEY = 'fi060-trace-v3';
       const LEGACY_STORAGE_KEYS = ['fi060-trace-v2', 'fi060-evidence-board-v2', 'fi060-evidence-board-v1'];
       const uid = prefix => `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
@@ -1925,6 +1926,13 @@
 
       function isSelected(type, id) {
         return state.selected.type === type && state.selected.id === id ? 'selected' : '';
+      }
+
+      function updateSelectionHighlights() {
+        $$('[data-select]').forEach(el => {
+          const isCurrent = el.dataset.select === state.selected.type && el.dataset.id === state.selected.id;
+          el.classList.toggle('selected', isCurrent);
+        });
       }
 
       function renderLedger(host) {
@@ -3416,7 +3424,18 @@
           }
           if (event.target.closest('[data-apply-status]')) { const btn = event.target.closest('[data-apply-status]'); const c = activeInvestigation().claims.find(x => x.id === btn.dataset.applyStatus); if (c) { c.status = btn.dataset.status; markDirty(); render(); } return; }
           const card = event.target.closest('[data-select]');
-          if (card) { state.selected = { type: card.dataset.select, id: card.dataset.id }; render(); openInspector(); return; }
+          if (card) {
+            state.selected = { type: card.dataset.select, id: card.dataset.id };
+            if (state.activeView === 'map') {
+              renderInspector();
+              openInspector();
+              updateSelectionHighlights();
+            } else {
+              render();
+              openInspector();
+            }
+            return;
+          }
           const add = event.target.closest('[data-add]');
           if (add) { addItem(add.dataset.add, add.dataset.claimId || ''); return; }
           const del = event.target.closest('[data-delete]');
