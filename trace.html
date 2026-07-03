@@ -764,21 +764,26 @@
     }
     .app.map-fullscreen #viewHost.map {
       padding: 0;
-      overflow: hidden;
+      overflow: auto;
     }
     .app.map-fullscreen .map-shell {
       max-width: none;
-      height: 100vh;
+      min-height: 100vh;
+      height: auto;
       padding: .75rem;
-      grid-template-rows: auto auto auto minmax(0, 1fr);
+      grid-template-rows: auto auto auto auto minmax(0, 1fr);
       gap: .6rem;
+      align-content: start;
     }
     .app.map-fullscreen .map-toolbar {
       grid-template-columns: minmax(320px, 1fr) 220px 220px auto;
-      position: relative;
-      z-index: 3;
+      position: sticky;
+      top: 0;
+      z-index: 6;
     }
-    .app.map-fullscreen .map-insights { grid-template-columns: repeat(4, minmax(130px, 1fr)); }
+    .app.map-fullscreen .map-insights { grid-template-columns: repeat(4, minmax(130px, 1fr)); position: relative; z-index: 5; }
+    .app.map-fullscreen .map-legend,
+    .app.map-fullscreen .map-toggles { position: relative; z-index: 5; }
     .app.map-fullscreen .map-story-grid {
       grid-template-columns: minmax(0, 1fr);
       min-height: 0;
@@ -786,7 +791,7 @@
       overflow: hidden;
     }
     .app.map-fullscreen .map-callouts { display: none; }
-    .app.map-fullscreen .network-map-card { min-height: 0; height: 100%; }
+    .app.map-fullscreen .network-map-card { min-height: 0; height: 100%; position: relative; z-index: 1; margin-top: .25rem; }
     .app.map-fullscreen .network-map-scroll {
       min-height: 0;
       height: 100%;
@@ -1163,7 +1168,7 @@
       <div class="brand">
         <div class="badge060">060</div>
         <div>
-          <h1>FI060 Trace <span class="muted">v3.2</span></h1>
+          <h1>FI060 Trace <span class="muted">v3.2.1</span></h1>
           <p>A local-first instrument for tracing claims, evidence, uncertainty, and decisions.</p>
         </div>
       </div>
@@ -1250,7 +1255,7 @@
     (() => {
       'use strict';
 
-      const VERSION = '3.2';
+      const VERSION = '3.2.1';
       const STORAGE_KEY = 'fi060-trace-v3';
       const LEGACY_STORAGE_KEYS = ['fi060-trace-v2', 'fi060-evidence-board-v2', 'fi060-evidence-board-v1'];
       const uid = prefix => `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
