@@ -480,8 +480,12 @@
     .network-map-svg .node-meta { fill: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
     .network-map-svg .node-score { fill: var(--accent2); font-size: 20px; font-weight: 950; }
     .network-map-svg .edge-label { fill: var(--muted); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; paint-order: stroke; stroke: var(--panel); stroke-width: 5px; stroke-linejoin: round; }
-    .map-story-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 1rem; }
+    .map-story-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
     .map-callouts { display: grid; gap: .75rem; }
+    .map-callouts { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .map-story-grid > .network-map-card { order: 1; }
+    .map-story-grid > .map-callouts { order: 2; }
+
     .map-callout {
       border: 1px solid var(--line);
       border-radius: 18px;
@@ -1169,7 +1173,7 @@
       <div class="brand">
         <div class="badge060">060</div>
         <div>
-          <h1>FI060 Trace <span class="muted">v3.2.2</span></h1>
+          <h1>FI060 Trace <span class="muted">v3.2.3</span></h1>
           <p>A local-first instrument for tracing claims, evidence, uncertainty, and decisions.</p>
         </div>
       </div>
@@ -1256,7 +1260,7 @@
     (() => {
       'use strict';
 
-      const VERSION = '3.2.2';
+      const VERSION = '3.2.3';
       const STORAGE_KEY = 'fi060-trace-v3';
       const LEGACY_STORAGE_KEYS = ['fi060-trace-v2', 'fi060-evidence-board-v2', 'fi060-evidence-board-v1'];
       const uid = prefix => `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
